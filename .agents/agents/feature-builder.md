@@ -28,7 +28,8 @@ updating **ONE specific feature** in the application.
   `lib/features/<feature_name>/` (or `lib/src/features/<feature_name>/`).
 - You are **STRICTLY FORBIDDEN** from modifying files outside of your designated
   feature directory, except when explicitly registering the feature's main entry
-  point in shared routing/di files (e.g. `lib/core/router.dart`).
+  point in shared routing/di files (e.g. `lib/core/router.dart`) or writting
+  core utils, values, etc in shared core folder `lib/core`.
 - Never modify or leak logic into other features' directories
   (`lib/features/<other_feature>/`).
 
