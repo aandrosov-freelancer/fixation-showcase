@@ -3,11 +3,13 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'task_items.dart';
+
 part 'app_database.g.dart';
 
 final appDatabaseProvider = Provider((_) => AppDatabase());
 
-@DriftDatabase(tables: [])
+@DriftDatabase(tables: [NoteItems])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
