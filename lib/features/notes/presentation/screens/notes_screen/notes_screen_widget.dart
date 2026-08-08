@@ -171,7 +171,8 @@ class _BodyWidget extends ConsumerWidget {
                     title: note.title,
                     content: note.content,
                     updatedAt: note.updatedAt,
-                    onTap: () => context.go(AppRoutes.noteEditorPath(note.id)),
+                    onTap: () =>
+                        context.push(AppRoutes.noteEditorPath(note.id)),
                     onLongPress: () => DeleteNoteDialog.show(
                       context,
                       onDelete: () => ref
