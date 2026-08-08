@@ -1,6 +1,6 @@
 name: app
-description: 
-publish_to: 'none'
+description:
+publish_to: "none"
 version: 0.1.0+1
 
 environment:
@@ -32,7 +32,11 @@ dev_dependencies:
   drift_dev: ^2.34.0
 
 flutter:
+  generate: true
   uses-material-design: false
+
+  assets:
+    - assets/icons/
 
 flutter_gen:
   output: lib/core/values

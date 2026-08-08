@@ -1,0 +1,11 @@
+{
+  "@@locale": "ru",
+  "appName": "Фиксация",
+  "@appName": {
+    "description": "Название приложения"
+  },
+  "appSubtitle": "Заметки, идеи, мысли",
+  "@appSubtitle": {
+    "description": "Подзаголовок приложения"
+  }
+}
