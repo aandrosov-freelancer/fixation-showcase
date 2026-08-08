@@ -7,5 +7,9 @@
   "appSubtitle": "Заметки, идеи, мысли",
   "@appSubtitle": {
     "description": "Подзаголовок приложения"
+  },
+  "searchHint": "Поиск по заметкам...",
+  "@searchHint": {
+    "description": "Подсказка в поле поиска"
   }
 }

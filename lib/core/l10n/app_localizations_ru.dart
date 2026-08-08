@@ -13,4 +13,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appSubtitle => 'Заметки, идеи, мысли';
+
+  @override
+  String get searchHint => 'Поиск по заметкам...';
 }

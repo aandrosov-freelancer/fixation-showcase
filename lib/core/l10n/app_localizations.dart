@@ -105,6 +105,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Заметки, идеи, мысли'**
   String get appSubtitle;
+
+  /// Подсказка в поле поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск по заметкам...'**
+  String get searchHint;
 }
 
 class _AppLocalizationsDelegate
