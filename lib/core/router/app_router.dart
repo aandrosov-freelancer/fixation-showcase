@@ -1,5 +1,5 @@
 import 'package:app/core/router/app_routes.dart';
-import 'package:app/features/notes/presentation/screens/note_editor_screen_widget.dart';
+import 'package:app/features/notes/presentation/screens/note_editor_screen/note_editor_screen_widget.dart';
 import 'package:app/features/notes/presentation/screens/notes_screen/notes_screen_widget.dart';
 import 'package:go_router/go_router.dart';
 

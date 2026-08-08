@@ -54,4 +54,67 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cancelButton => 'Отмена';
+
+  @override
+  String get titleHint => 'Заголовок';
+
+  @override
+  String get contentHint => 'Начните писать...';
+
+  @override
+  String get backTooltip => 'Назад';
+
+  @override
+  String get deleteNoteTooltip => 'Удалить заметку';
+
+  @override
+  String get imageSourceTitle => 'Добавить изображение';
+
+  @override
+  String get insertImageFromGallery => 'Выбрать из галереи';
+
+  @override
+  String get insertImageFromUrl => 'Вставить по ссылке';
+
+  @override
+  String get insertImageTitle => 'Вставить изображение';
+
+  @override
+  String get insertImageHint => 'https://example.com/image.png';
+
+  @override
+  String get insertButton => 'Вставить';
+
+  @override
+  String get textColorTitle => 'Цвет текста';
+
+  @override
+  String get tooltipBold => 'Жирный';
+
+  @override
+  String get tooltipItalic => 'Курсив';
+
+  @override
+  String get tooltipHeader1 => 'Заголовок 1';
+
+  @override
+  String get tooltipHeader2 => 'Заголовок 2';
+
+  @override
+  String get tooltipHeader3 => 'Заголовок 3';
+
+  @override
+  String get tooltipList => 'Список';
+
+  @override
+  String get tooltipColor => 'Цвет';
+
+  @override
+  String get tooltipImage => 'Изображение';
+
+  @override
+  String get tooltipCollapse => 'Свернуть';
+
+  @override
+  String get tooltipToolbar => 'Панель инструментов';
 }

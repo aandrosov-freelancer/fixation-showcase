@@ -183,6 +183,132 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Отмена'**
   String get cancelButton;
+
+  /// Плейсхолдер поля заголовка заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Заголовок'**
+  String get titleHint;
+
+  /// Плейсхолдер редактора заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Начните писать...'**
+  String get contentHint;
+
+  /// Тултип кнопки назад
+  ///
+  /// In ru, this message translates to:
+  /// **'Назад'**
+  String get backTooltip;
+
+  /// Тултип кнопки удаления заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить заметку'**
+  String get deleteNoteTooltip;
+
+  /// Заголовок выбора источника изображения
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить изображение'**
+  String get imageSourceTitle;
+
+  /// Пункт меню выбора из галереи
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбрать из галереи'**
+  String get insertImageFromGallery;
+
+  /// Пункт меню вставки по URL
+  ///
+  /// In ru, this message translates to:
+  /// **'Вставить по ссылке'**
+  String get insertImageFromUrl;
+
+  /// Заголовок диалога вставки изображения по URL
+  ///
+  /// In ru, this message translates to:
+  /// **'Вставить изображение'**
+  String get insertImageTitle;
+
+  /// Плейсхолдер поля ввода URL изображения
+  ///
+  /// In ru, this message translates to:
+  /// **'https://example.com/image.png'**
+  String get insertImageHint;
+
+  /// Кнопка вставки
+  ///
+  /// In ru, this message translates to:
+  /// **'Вставить'**
+  String get insertButton;
+
+  /// Заголовок палитры цветов текста
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвет текста'**
+  String get textColorTitle;
+
+  /// Тултип кнопки жирного текста
+  ///
+  /// In ru, this message translates to:
+  /// **'Жирный'**
+  String get tooltipBold;
+
+  /// Тултип кнопки курсива
+  ///
+  /// In ru, this message translates to:
+  /// **'Курсив'**
+  String get tooltipItalic;
+
+  /// Тултип кнопки заголовка H1
+  ///
+  /// In ru, this message translates to:
+  /// **'Заголовок 1'**
+  String get tooltipHeader1;
+
+  /// Тултип кнопки заголовка H2
+  ///
+  /// In ru, this message translates to:
+  /// **'Заголовок 2'**
+  String get tooltipHeader2;
+
+  /// Тултип кнопки заголовка H3
+  ///
+  /// In ru, this message translates to:
+  /// **'Заголовок 3'**
+  String get tooltipHeader3;
+
+  /// Тултип кнопки маркированного списка
+  ///
+  /// In ru, this message translates to:
+  /// **'Список'**
+  String get tooltipList;
+
+  /// Тултип кнопки цвета текста
+  ///
+  /// In ru, this message translates to:
+  /// **'Цвет'**
+  String get tooltipColor;
+
+  /// Тултип кнопки вставки изображения
+  ///
+  /// In ru, this message translates to:
+  /// **'Изображение'**
+  String get tooltipImage;
+
+  /// Тултип кнопки сворачивания панели
+  ///
+  /// In ru, this message translates to:
+  /// **'Свернуть'**
+  String get tooltipCollapse;
+
+  /// Тултип кнопки разворачивания панели инструментов
+  ///
+  /// In ru, this message translates to:
+  /// **'Панель инструментов'**
+  String get tooltipToolbar;
 }
 
 class _AppLocalizationsDelegate

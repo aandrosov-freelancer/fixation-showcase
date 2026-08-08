@@ -59,5 +59,89 @@
   "cancelButton": "Отмена",
   "@cancelButton": {
     "description": "Кнопка отмена"
+  },
+  "titleHint": "Заголовок",
+  "@titleHint": {
+    "description": "Плейсхолдер поля заголовка заметки"
+  },
+  "contentHint": "Начните писать...",
+  "@contentHint": {
+    "description": "Плейсхолдер редактора заметки"
+  },
+  "backTooltip": "Назад",
+  "@backTooltip": {
+    "description": "Тултип кнопки назад"
+  },
+  "deleteNoteTooltip": "Удалить заметку",
+  "@deleteNoteTooltip": {
+    "description": "Тултип кнопки удаления заметки"
+  },
+  "imageSourceTitle": "Добавить изображение",
+  "@imageSourceTitle": {
+    "description": "Заголовок выбора источника изображения"
+  },
+  "insertImageFromGallery": "Выбрать из галереи",
+  "@insertImageFromGallery": {
+    "description": "Пункт меню выбора из галереи"
+  },
+  "insertImageFromUrl": "Вставить по ссылке",
+  "@insertImageFromUrl": {
+    "description": "Пункт меню вставки по URL"
+  },
+  "insertImageTitle": "Вставить изображение",
+  "@insertImageTitle": {
+    "description": "Заголовок диалога вставки изображения по URL"
+  },
+  "insertImageHint": "https://example.com/image.png",
+  "@insertImageHint": {
+    "description": "Плейсхолдер поля ввода URL изображения"
+  },
+  "insertButton": "Вставить",
+  "@insertButton": {
+    "description": "Кнопка вставки"
+  },
+  "textColorTitle": "Цвет текста",
+  "@textColorTitle": {
+    "description": "Заголовок палитры цветов текста"
+  },
+  "tooltipBold": "Жирный",
+  "@tooltipBold": {
+    "description": "Тултип кнопки жирного текста"
+  },
+  "tooltipItalic": "Курсив",
+  "@tooltipItalic": {
+    "description": "Тултип кнопки курсива"
+  },
+  "tooltipHeader1": "Заголовок 1",
+  "@tooltipHeader1": {
+    "description": "Тултип кнопки заголовка H1"
+  },
+  "tooltipHeader2": "Заголовок 2",
+  "@tooltipHeader2": {
+    "description": "Тултип кнопки заголовка H2"
+  },
+  "tooltipHeader3": "Заголовок 3",
+  "@tooltipHeader3": {
+    "description": "Тултип кнопки заголовка H3"
+  },
+  "tooltipList": "Список",
+  "@tooltipList": {
+    "description": "Тултип кнопки маркированного списка"
+  },
+  "tooltipColor": "Цвет",
+  "@tooltipColor": {
+    "description": "Тултип кнопки цвета текста"
+  },
+  "tooltipImage": "Изображение",
+  "@tooltipImage": {
+    "description": "Тултип кнопки вставки изображения"
+  },
+  "tooltipCollapse": "Свернуть",
+  "@tooltipCollapse": {
+    "description": "Тултип кнопки сворачивания панели"
+  },
+  "tooltipToolbar": "Панель инструментов",
+  "@tooltipToolbar": {
+    "description": "Тултип кнопки разворачивания панели инструментов"
   }
 }

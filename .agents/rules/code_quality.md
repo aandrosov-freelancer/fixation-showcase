@@ -7,3 +7,4 @@ trigger: always_on
 - Always run dart format and flutter analyze in the end of an code
   implementation
 - Always follow project structure and defined patterns
+- Always Do not write comments
