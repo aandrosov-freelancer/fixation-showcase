@@ -204,10 +204,10 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updated
 
 
 class _NoteModel implements NoteModel {
-   _NoteModel({required this.id, required this.title, required this.content, required this.createdAt, required this.updatedAt});
+   _NoteModel({this.id = 0, required this.title, required this.content, required this.createdAt, required this.updatedAt});
   
 
-@override final  int id;
+@override@JsonKey() final  int id;
 @override final  String title;
 @override final  String content;
 @override final  DateTime createdAt;

@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          named_parameters: true
+          sql:
+            dialect: sqlite
+            options:
+              modules:
+                - fts5

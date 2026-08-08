@@ -10,11 +10,30 @@ class NoteItems extends Table {
 }
 
 extension NoteQueries on AppDatabase {
-  Future<List<NoteItem>> get allNoteItems => select(noteItems).get();
+  static OrderingTerm byUpdatedAtDesc($NoteItemsTable note) =>
+      .desc(note.updatedAt);
 
-  Future<NoteItem?> getNoteById(int id) {
+  Future<List<NoteItem>> get allNoteItems {
+    return (select(noteItems)..orderBy([byUpdatedAtDesc])).get();
+  }
+
+  Future<NoteItem?> findNoteById(int id) {
     var note = (select(noteItems)..where(((note) => note.id.equals(id))));
     return note.getSingleOrNull();
+  }
+
+  Future<List<NoteItem>> findNotesByFullTextSearch(String query) {
+    query = query.trim().toLowerCase();
+
+    Expression<bool> matcher($NoteItemsTable note) => .or([
+      note.title.lower().like('%$query%'),
+      note.content.lower().like('%$query%'),
+    ]);
+
+    return (select(noteItems)
+          ..where(matcher)
+          ..orderBy([byUpdatedAtDesc]))
+        .get();
   }
 
   Future<int> insertNote(NoteItemsCompanion note) {

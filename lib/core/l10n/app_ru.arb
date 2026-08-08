@@ -8,8 +8,56 @@
   "@appSubtitle": {
     "description": "Подзаголовок приложения"
   },
+  "noDescription": "Без дополнительного текста",
+  "@noDescription": {
+    "description": "Текст по умолчанию для пустой карточки заметки"
+  },
   "searchHint": "Поиск по заметкам...",
   "@searchHint": {
     "description": "Подсказка в поле поиска"
+  },
+  "emptyNotesTitle": "Заметок пока нет",
+  "@emptyNotesTitle": {
+    "description": "Заголовок для пустого списка заметок"
+  },
+  "emptyNotesSubtitle": "Нажмите \"+\", чтобы создать свою первую заметку",
+  "@emptyNotesSubtitle": {
+    "description": "Подсказка для пустого списка заметок"
+  },
+  "emptySearchTitle": "Ничего не найдено",
+  "@emptySearchTitle": {
+    "description": "Заголовок при отсутствии результатов поиска"
+  },
+  "emptySearchSubtitle": "Попробуйте изменить поисковый запрос",
+  "@emptySearchSubtitle": {
+    "description": "Подсказка при отсутствии результатов поиска"
+  },
+  "loadErrorTitle": "Произошла ошибка при загрузке заметок",
+  "@loadErrorTitle": {
+    "description": "Заголовок ошибки загрузки"
+  },
+  "loadErrorSubtitle": "Попробуйте перезапустить приложение.",
+  "@loadErrorSubtitle": {
+    "description": "Подсказка при ошибке загрузки"
+  },
+  "retryButton": "Повторить",
+  "@retryButton": {
+    "description": "Кнопка повтора"
+  },
+  "deleteDialogTitle": "Удалить заметку?",
+  "@deleteDialogTitle": {
+    "description": "Заголовок диалога удаления"
+  },
+  "deleteDialogMessage": "Вы уверены, что хотите удалить эту заметку? Это действие невозможно отменить.",
+  "@deleteDialogMessage": {
+    "description": "Текст диалога подтверждения удаления"
+  },
+  "deleteButton": "Удалить",
+  "@deleteButton": {
+    "description": "Кнопка удалить"
+  },
+  "cancelButton": "Отмена",
+  "@cancelButton": {
+    "description": "Кнопка отмена"
   }
 }

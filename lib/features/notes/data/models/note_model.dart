@@ -5,7 +5,7 @@ part 'note_model.freezed.dart';
 @freezed
 sealed class NoteModel with _$NoteModel {
   factory NoteModel({
-    required int id,
+    @Default(0) int id,
     required String title,
     required String content,
     required DateTime createdAt,

@@ -19,7 +19,7 @@ class NotesRepository {
   }
 
   Future<NoteModel?> getNoteById({required int id}) async {
-    final note = await _appDatabase.getNoteById(id);
+    final note = await _appDatabase.findNoteById(id);
     return note != null ? NoteMapper.toModel(note) : null;
   }
 
@@ -35,5 +35,12 @@ class NotesRepository {
 
   Future<int> deleteNote({required int id}) {
     return _appDatabase.deleteNote(id: id);
+  }
+
+  Future<List<NoteModel>> getNotesByFullTextSearch({
+    required String query,
+  }) async {
+    final notes = await _appDatabase.findNotesByFullTextSearch(query);
+    return notes.map(NoteMapper.toModel).toList();
   }
 }

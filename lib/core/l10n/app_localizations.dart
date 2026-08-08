@@ -106,11 +106,83 @@ abstract class AppLocalizations {
   /// **'Заметки, идеи, мысли'**
   String get appSubtitle;
 
+  /// Текст по умолчанию для пустой карточки заметки
+  ///
+  /// In ru, this message translates to:
+  /// **'Без дополнительного текста'**
+  String get noDescription;
+
   /// Подсказка в поле поиска
   ///
   /// In ru, this message translates to:
   /// **'Поиск по заметкам...'**
   String get searchHint;
+
+  /// Заголовок для пустого списка заметок
+  ///
+  /// In ru, this message translates to:
+  /// **'Заметок пока нет'**
+  String get emptyNotesTitle;
+
+  /// Подсказка для пустого списка заметок
+  ///
+  /// In ru, this message translates to:
+  /// **'Нажмите \"+\", чтобы создать свою первую заметку'**
+  String get emptyNotesSubtitle;
+
+  /// Заголовок при отсутствии результатов поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Ничего не найдено'**
+  String get emptySearchTitle;
+
+  /// Подсказка при отсутствии результатов поиска
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте изменить поисковый запрос'**
+  String get emptySearchSubtitle;
+
+  /// Заголовок ошибки загрузки
+  ///
+  /// In ru, this message translates to:
+  /// **'Произошла ошибка при загрузке заметок'**
+  String get loadErrorTitle;
+
+  /// Подсказка при ошибке загрузки
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте перезапустить приложение.'**
+  String get loadErrorSubtitle;
+
+  /// Кнопка повтора
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторить'**
+  String get retryButton;
+
+  /// Заголовок диалога удаления
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить заметку?'**
+  String get deleteDialogTitle;
+
+  /// Текст диалога подтверждения удаления
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы уверены, что хотите удалить эту заметку? Это действие невозможно отменить.'**
+  String get deleteDialogMessage;
+
+  /// Кнопка удалить
+  ///
+  /// In ru, this message translates to:
+  /// **'Удалить'**
+  String get deleteButton;
+
+  /// Кнопка отмена
+  ///
+  /// In ru, this message translates to:
+  /// **'Отмена'**
+  String get cancelButton;
 }
 
 class _AppLocalizationsDelegate
