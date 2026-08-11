@@ -57,6 +57,7 @@ class _NoteEditorScreenWidgetState
     final notesRepository = ref.read(notesRepositoryProvider);
     final title = _titleController.text;
     final content = jsonEncode(_quillController.document.toDelta().toJson());
+    final summary = _quillController.document.getPlainText(0, 100);
     final createdAt = _noteCreatedAt ?? .now();
     final updatedAt = DateTime.now();
 
@@ -65,6 +66,7 @@ class _NoteEditorScreenWidgetState
         .new(
           title: title,
           content: content,
+          summary: summary,
           createdAt: .now(),
           updatedAt: updatedAt,
         ),
@@ -75,6 +77,7 @@ class _NoteEditorScreenWidgetState
           id: _noteId!,
           title: title,
           content: content,
+          summary: summary,
           createdAt: createdAt,
           updatedAt: updatedAt,
         ),

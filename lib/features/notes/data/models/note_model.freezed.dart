@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NoteModel {
 
- int get id; String get title; String get content; DateTime get createdAt; DateTime get updatedAt;
+ int get id; String get title; String get content; String get summary; DateTime get createdAt; DateTime get updatedAt;
 /// Create a copy of NoteModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $NoteModelCopyWith<NoteModel> get copyWith => _$NoteModelCopyWithImpl<NoteModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,title,content,summary,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'NoteModel(id: $id, title: $title, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'NoteModel(id: $id, title: $title, content: $content, summary: $summary, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $NoteModelCopyWith<$Res>  {
   factory $NoteModelCopyWith(NoteModel value, $Res Function(NoteModel) _then) = _$NoteModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String content, DateTime createdAt, DateTime updatedAt
+ int id, String title, String content, String summary, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -62,11 +62,12 @@ class _$NoteModelCopyWithImpl<$Res>
 
 /// Create a copy of NoteModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? summary = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content,  String summary,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NoteModel() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.title,_that.content,_that.summary,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updated
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content,  String summary,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _NoteModel():
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updatedAt);}
+return $default(_that.id,_that.title,_that.content,_that.summary,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -189,10 +190,10 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updated
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content,  String summary,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _NoteModel() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.title,_that.content,_that.summary,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -204,12 +205,13 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.updated
 
 
 class _NoteModel implements NoteModel {
-   _NoteModel({this.id = 0, required this.title, required this.content, required this.createdAt, required this.updatedAt});
+   _NoteModel({this.id = 0, required this.title, required this.content, required this.summary, required this.createdAt, required this.updatedAt});
   
 
 @override@JsonKey() final  int id;
 @override final  String title;
 @override final  String content;
+@override final  String summary;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 
@@ -223,16 +225,16 @@ _$NoteModelCopyWith<_NoteModel> get copyWith => __$NoteModelCopyWithImpl<_NoteMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NoteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NoteModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,title,content,summary,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'NoteModel(id: $id, title: $title, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'NoteModel(id: $id, title: $title, content: $content, summary: $summary, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -243,7 +245,7 @@ abstract mixin class _$NoteModelCopyWith<$Res> implements $NoteModelCopyWith<$Re
   factory _$NoteModelCopyWith(_NoteModel value, $Res Function(_NoteModel) _then) = __$NoteModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String content, DateTime createdAt, DateTime updatedAt
+ int id, String title, String content, String summary, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -260,11 +262,12 @@ class __$NoteModelCopyWithImpl<$Res>
 
 /// Create a copy of NoteModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? summary = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_NoteModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,

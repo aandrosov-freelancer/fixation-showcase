@@ -10,6 +10,7 @@ final class NoteMapper {
       id: item.id,
       title: item.title,
       content: item.content,
+      summary: item.summary,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     );
@@ -20,6 +21,7 @@ final class NoteMapper {
       id: model.id,
       title: model.title,
       content: model.content,
+      summary: model.summary,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     );
@@ -29,6 +31,7 @@ final class NoteMapper {
     return .new(
       title: Value(model.title),
       content: Value(model.content),
+      summary: Value(model.summary),
       createdAt: Value(model.createdAt),
       updatedAt: Value(model.updatedAt),
     );

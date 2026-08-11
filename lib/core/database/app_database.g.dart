@@ -42,6 +42,17 @@ class $NoteItemsTable extends NoteItems
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -71,6 +82,7 @@ class $NoteItemsTable extends NoteItems
     id,
     title,
     content,
+    summary,
     createdAt,
     updatedAt,
   ];
@@ -105,6 +117,14 @@ class $NoteItemsTable extends NoteItems
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -138,6 +158,10 @@ class $NoteItemsTable extends NoteItems
         DriftSqlType.string,
         data['${effectivePrefix}content'],
       )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -159,12 +183,14 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
   final int id;
   final String title;
   final String content;
+  final String summary;
   final DateTime createdAt;
   final DateTime updatedAt;
   const NoteItem({
     required this.id,
     required this.title,
     required this.content,
+    required this.summary,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -174,6 +200,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['content'] = Variable<String>(content);
+    map['summary'] = Variable<String>(summary);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -184,6 +211,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
       id: Value(id),
       title: Value(title),
       content: Value(content),
+      summary: Value(summary),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -198,6 +226,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       content: serializer.fromJson<String>(json['content']),
+      summary: serializer.fromJson<String>(json['summary']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -209,6 +238,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'content': serializer.toJson<String>(content),
+      'summary': serializer.toJson<String>(summary),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -218,12 +248,14 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
     int? id,
     String? title,
     String? content,
+    String? summary,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => NoteItem(
     id: id ?? this.id,
     title: title ?? this.title,
     content: content ?? this.content,
+    summary: summary ?? this.summary,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -232,6 +264,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       content: data.content.present ? data.content.value : this.content,
+      summary: data.summary.present ? data.summary.value : this.summary,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -243,6 +276,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
+          ..write('summary: $summary, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -250,7 +284,8 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
   }
 
   @override
-  int get hashCode => Object.hash(id, title, content, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(id, title, content, summary, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -258,6 +293,7 @@ class NoteItem extends DataClass implements Insertable<NoteItem> {
           other.id == this.id &&
           other.title == this.title &&
           other.content == this.content &&
+          other.summary == this.summary &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -266,12 +302,14 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> content;
+  final Value<String> summary;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const NoteItemsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.content = const Value.absent(),
+    this.summary = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -279,14 +317,17 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
     this.id = const Value.absent(),
     required String title,
     required String content,
+    required String summary,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : title = Value(title),
-       content = Value(content);
+       content = Value(content),
+       summary = Value(summary);
   static Insertable<NoteItem> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? content,
+    Expression<String>? summary,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -294,6 +335,7 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (content != null) 'content': content,
+      if (summary != null) 'summary': summary,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -303,6 +345,7 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
     Value<int>? id,
     Value<String>? title,
     Value<String>? content,
+    Value<String>? summary,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -310,6 +353,7 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
+      summary: summary ?? this.summary,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -327,6 +371,9 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -342,6 +389,7 @@ class NoteItemsCompanion extends UpdateCompanion<NoteItem> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('content: $content, ')
+          ..write('summary: $summary, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -365,6 +413,7 @@ typedef $$NoteItemsTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       required String content,
+      required String summary,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -373,6 +422,7 @@ typedef $$NoteItemsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> title,
       Value<String> content,
+      Value<String> summary,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -398,6 +448,11 @@ class $$NoteItemsTableFilterComposer
 
   ColumnFilters<String> get content => $composableBuilder(
     column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -436,6 +491,11 @@ class $$NoteItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -464,6 +524,9 @@ class $$NoteItemsTableAnnotationComposer
 
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -503,12 +566,14 @@ class $$NoteItemsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> content = const Value.absent(),
+                Value<String> summary = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => NoteItemsCompanion(
                 id: id,
                 title: title,
                 content: content,
+                summary: summary,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -517,12 +582,14 @@ class $$NoteItemsTableTableManager
                 Value<int> id = const Value.absent(),
                 required String title,
                 required String content,
+                required String summary,
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => NoteItemsCompanion.insert(
                 id: id,
                 title: title,
                 content: content,
+                summary: summary,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

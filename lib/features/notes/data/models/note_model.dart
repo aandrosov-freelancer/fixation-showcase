@@ -8,6 +8,7 @@ sealed class NoteModel with _$NoteModel {
     @Default(0) int id,
     required String title,
     required String content,
+    required String summary,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _NoteModel;
