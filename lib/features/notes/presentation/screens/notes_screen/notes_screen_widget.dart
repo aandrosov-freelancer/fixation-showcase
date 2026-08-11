@@ -171,8 +171,12 @@ class _BodyWidget extends ConsumerWidget {
                     title: note.title,
                     content: note.summary,
                     updatedAt: note.updatedAt,
-                    onTap: () =>
-                        context.push(AppRoutes.noteEditorPath(note.id)),
+                    onTap: () async {
+                      await context.push(AppRoutes.noteEditorPath(note.id));
+                      ref
+                          .read(notesScreenViewModelProvider.notifier)
+                          .searchNotes();
+                    },
                     onLongPress: () => _DeleteNoteDialog.show(
                       context,
                       onDelete: () => ref
@@ -432,7 +436,10 @@ class _CustomBottomBarWidget extends HookConsumerWidget {
     );
 
     final addButtonWidget = IconButton.filled(
-      onPressed: () => context.push(AppRoutes.noteEditorPath(null)),
+      onPressed: () async {
+        await context.push(AppRoutes.noteEditorPath(null));
+        ref.read(notesScreenViewModelProvider.notifier).searchNotes();
+      },
       iconSize: 32,
       icon: Icon(LucideIcons.plus),
     );
