@@ -12,17 +12,25 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class NotesScreenWidget extends StatelessWidget {
+class NotesScreenWidget extends HookConsumerWidget {
   const NotesScreenWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const _CustomAppBarWidget(),
       body: Column(
         children: [
           Expanded(child: const _BodyWidget()),
-          const _CustomBottomBarWidget(),
+          _CustomBottomBarWidget(
+            onSearchChanged: (value) => ref
+                .read(notesScreenViewModelProvider.notifier)
+                .searchNotes(query: value),
+            onAddNote: () async {
+              await context.push(AppRoutes.noteEditorPath(null));
+              ref.read(notesScreenViewModelProvider.notifier).searchNotes();
+            },
+          ),
         ],
       ),
     );
@@ -385,64 +393,20 @@ class _CustomAppBarWidget extends StatelessWidget
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 8);
 }
 
-class _CustomBottomBarWidget extends HookConsumerWidget {
-  const _CustomBottomBarWidget();
+class _CustomBottomBarWidget extends HookWidget {
+  const _CustomBottomBarWidget({
+    required this.onSearchChanged,
+    required this.onAddNote,
+  });
+
+  final Function(String) onSearchChanged;
+  final Function() onAddNote;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(notesScreenViewModelProvider);
-
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = ColorScheme.of(context);
     final searchTextEditingController = useTextEditingController();
-
-    final searchTextFieldWidget = TextField(
-      controller: searchTextEditingController,
-      onChanged: (val) => ref
-          .read(notesScreenViewModelProvider.notifier)
-          .searchNotes(query: val),
-      style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
-      decoration: InputDecoration(
-        hintText: l10n.searchHint,
-        hintStyle: TextStyle(color: colorScheme.secondary, fontSize: 14),
-        prefixIcon: Icon(
-          LucideIcons.search,
-          size: 18,
-          color: colorScheme.secondary,
-        ),
-        suffixIcon: searchTextEditingController.text.isNotEmpty
-            ? IconButton(
-                icon: Icon(
-                  LucideIcons.x,
-                  size: 16,
-                  color: colorScheme.secondary,
-                ),
-                onPressed: () {
-                  searchTextEditingController.clear();
-                  ref
-                      .read(notesScreenViewModelProvider.notifier)
-                      .searchNotes(query: null);
-                },
-              )
-            : null,
-        contentPadding: const EdgeInsets.symmetric(vertical: 10),
-        filled: true,
-        fillColor: const Color(0xFFF4F4F5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-
-    final addButtonWidget = IconButton.filled(
-      onPressed: () async {
-        await context.push(AppRoutes.noteEditorPath(null));
-        ref.read(notesScreenViewModelProvider.notifier).searchNotes();
-      },
-      iconSize: 32,
-      icon: Icon(LucideIcons.plus),
-    );
 
     return SafeArea(
       top: false,
@@ -461,9 +425,54 @@ class _CustomBottomBarWidget extends HookConsumerWidget {
         ),
         child: Row(
           children: [
-            Expanded(child: searchTextFieldWidget),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: searchTextEditingController,
+                builder: (_, value, _) => TextField(
+                  controller: searchTextEditingController,
+                  onChanged: onSearchChanged,
+                  style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: l10n.searchHint,
+                    hintStyle: TextStyle(
+                      color: colorScheme.secondary,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: Icon(
+                      LucideIcons.search,
+                      size: 18,
+                      color: colorScheme.secondary,
+                    ),
+                    suffixIcon: searchTextEditingController.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(
+                              LucideIcons.x,
+                              size: 16,
+                              color: colorScheme.secondary,
+                            ),
+                            onPressed: () {
+                              searchTextEditingController.clear();
+                              onSearchChanged('');
+                            },
+                          )
+                        : null,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                    filled: true,
+                    fillColor: const Color(0xFFF4F4F5),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(width: 12),
-            addButtonWidget,
+            IconButton.filled(
+              onPressed: onAddNote,
+              iconSize: 32,
+              icon: Icon(LucideIcons.plus),
+            ),
           ],
         ),
       ),
