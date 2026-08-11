@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:app/core/l10n/app_localizations.dart';
 import 'package:app/core/storage/local_image_service.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/notes/data/models/note_model.dart';
-import 'package:app/features/notes/presentation/screens/note_editor_screen/note_editor_screen_view_model.dart';
+import 'package:app/features/notes/data/repositories/notes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
@@ -28,113 +27,60 @@ class _NoteEditorScreenWidgetState
   late QuillController _quillController;
   final FocusNode _editorFocusNode = FocusNode();
   final ScrollController _scrollController = ScrollController();
-
-  NoteModel? _currentNote;
-  bool _isLoading = true;
+  int? _noteId;
+  DateTime? _noteCreatedAt;
 
   @override
   void initState() {
     super.initState();
+    _noteId = widget.noteId;
     _quillController = QuillController.basic();
     _loadNoteData();
   }
 
   Future<void> _loadNoteData() async {
-    final viewModel = ref.read(noteEditorViewModelProvider.notifier);
+    final notesRepository = ref.read(notesRepositoryProvider);
 
     if (widget.noteId != null) {
-      await viewModel.loadNote(widget.noteId);
-      final noteState = ref.read(noteEditorViewModelProvider);
-      final existingNote = noteState.value;
-
-      if (existingNote != null && mounted) {
-        _currentNote = existingNote;
-        _titleController.text = existingNote.title;
-
-        if (existingNote.content.isNotEmpty) {
-          try {
-            final jsonList = jsonDecode(existingNote.content) as List<dynamic>;
-            final doc = Document.fromJson(jsonList);
-            final oldController = _quillController;
-            _quillController = QuillController(
-              document: doc,
-              selection: const TextSelection.collapsed(offset: 0),
-            );
-            oldController.dispose();
-          } catch (_) {}
-        }
+      final note = await notesRepository.getNoteById(id: widget.noteId!);
+      if (note == null) {
+        return;
       }
+
+      _titleController.text = note.title;
+      _quillController.document = Document.fromJson(jsonDecode(note.content));
+      _noteCreatedAt = note.createdAt;
     }
-
-    if (mounted) {
-      _titleController.addListener(_onTextChanged);
-      _quillController.addListener(_onTextChanged);
-
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _onTextChanged() {
-    if (_isLoading) return;
-    _triggerAutoSave();
-  }
-
-  void _triggerAutoSave() {
-    final doc = _quillController.document;
-    final contentJson = jsonEncode(doc.toDelta().toJson());
-    final plainText = doc.toPlainText().trim();
-    final title = _titleController.text.trim();
-
-    if (title.isEmpty &&
-        plainText.isEmpty &&
-        (_currentNote == null || _currentNote!.id == 0)) {
-      return;
-    }
-
-    final now = DateTime.now();
-    final noteToSave =
-        (_currentNote ??
-                NoteModel(
-                  title: '',
-                  content: '',
-                  createdAt: now,
-                  updatedAt: now,
-                ))
-            .copyWith(title: title, content: contentJson);
-
-    ref
-        .read(noteEditorViewModelProvider.notifier)
-        .saveNote(noteToSave, debounced: true)
-        .then((savedNote) {
-          if (mounted) {
-            _currentNote = savedNote;
-          }
-        });
   }
 
   Future<void> _saveAndExit() async {
-    final doc = _quillController.document;
-    final contentJson = jsonEncode(doc.toDelta().toJson());
-    final plainText = doc.toPlainText().trim();
-    final title = _titleController.text.trim();
+    final notesRepository = ref.read(notesRepositoryProvider);
+    final title = _titleController.text;
+    final content = jsonEncode(_quillController.document.toDelta().toJson());
+    final createdAt = _noteCreatedAt ?? .now();
+    final updatedAt = DateTime.now();
 
-    if (title.isNotEmpty || plainText.isNotEmpty) {
-      final now = DateTime.now();
-      final noteToSave =
-          (_currentNote ??
-                  NoteModel(
-                    title: '',
-                    content: '',
-                    createdAt: now,
-                    updatedAt: now,
-                  ))
-              .copyWith(title: title, content: contentJson);
-      await ref
-          .read(noteEditorViewModelProvider.notifier)
-          .saveNote(noteToSave, debounced: false);
+    if (_noteId == null) {
+      _noteId = await notesRepository.addNote(
+        .new(
+          title: title,
+          content: content,
+          createdAt: .now(),
+          updatedAt: updatedAt,
+        ),
+      );
+    } else {
+      await notesRepository.updateNote(
+        .new(
+          id: _noteId!,
+          title: title,
+          content: content,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+        ),
+      );
     }
+
     if (mounted) {
       context.pop();
     }
@@ -281,21 +227,11 @@ class _NoteEditorScreenWidgetState
   }
 
   void _onDeletePressed() {
-    _DeleteNoteDialog.show(
-      context,
-      onDelete: () async {
-        await ref.read(noteEditorViewModelProvider.notifier).deleteNote();
-        if (mounted) {
-          context.pop();
-        }
-      },
-    );
+    _DeleteNoteDialog.show(context, onDelete: () async {});
   }
 
   @override
   void dispose() {
-    _titleController.removeListener(_onTextChanged);
-    _quillController.removeListener(_onTextChanged);
     _titleController.dispose();
     _quillController.dispose();
     _editorFocusNode.dispose();
@@ -355,7 +291,10 @@ class _NoteEditorScreenWidgetState
                 top: false,
                 child: _FloatingQuillToolbar(
                   controller: _quillController,
-                  onAddImage: _showImageSourcePicker,
+                  onAddImage: () {
+                    _editorFocusNode.unfocus();
+                    _showImageSourcePicker();
+                  },
                 ),
               ),
             ),
