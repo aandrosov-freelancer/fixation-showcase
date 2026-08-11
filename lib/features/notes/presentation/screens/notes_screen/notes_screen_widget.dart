@@ -169,11 +169,11 @@ class _BodyWidget extends ConsumerWidget {
                 child: FadeInAnimation(
                   child: _NoteCard(
                     title: note.title,
-                    content: note.content,
+                    content: note.summary,
                     updatedAt: note.updatedAt,
                     onTap: () =>
                         context.push(AppRoutes.noteEditorPath(note.id)),
-                    onLongPress: () => DeleteNoteDialog.show(
+                    onLongPress: () => _DeleteNoteDialog.show(
                       context,
                       onDelete: () => ref
                           .read(notesScreenViewModelProvider.notifier)
@@ -242,10 +242,10 @@ class _ErrorWidget extends StatelessWidget {
   }
 }
 
-class DeleteNoteDialog extends StatelessWidget {
+class _DeleteNoteDialog extends StatelessWidget {
   final VoidCallback onDelete;
 
-  const DeleteNoteDialog({super.key, required this.onDelete});
+  const _DeleteNoteDialog({required this.onDelete});
 
   static Future<void> show(
     BuildContext context, {
@@ -253,7 +253,7 @@ class DeleteNoteDialog extends StatelessWidget {
   }) {
     return showDialog(
       context: context,
-      builder: (context) => DeleteNoteDialog(onDelete: onDelete),
+      builder: (context) => _DeleteNoteDialog(onDelete: onDelete),
     );
   }
 
