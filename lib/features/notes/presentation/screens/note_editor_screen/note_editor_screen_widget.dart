@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app/core/l10n/app_localizations.dart';
 import 'package:app/core/storage/local_image_service.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:truncate/truncate.dart';
 
 class NoteEditorScreenWidget extends ConsumerStatefulWidget {
   final int? noteId;
@@ -57,7 +59,7 @@ class _NoteEditorScreenWidgetState
     final notesRepository = ref.read(notesRepositoryProvider);
     final title = _titleController.text;
     final content = jsonEncode(_quillController.document.toDelta().toJson());
-    final summary = _quillController.document.getPlainText(0, 100);
+    final summary = truncate(_quillController.document.toPlainText(), 40);
     final createdAt = _noteCreatedAt ?? .now();
     final updatedAt = DateTime.now();
 
@@ -230,7 +232,20 @@ class _NoteEditorScreenWidgetState
   }
 
   void _onDeletePressed() {
-    _DeleteNoteDialog.show(context, onDelete: () async {});
+    _DeleteNoteDialog.show(
+      context,
+      onDelete: () async {
+        final notesRepository = ref.read(notesRepositoryProvider);
+
+        if (_noteId != null) {
+          await notesRepository.deleteNote(id: _noteId!);
+        }
+
+        if (mounted) {
+          context.pop();
+        }
+      },
+    );
   }
 
   @override
@@ -251,9 +266,10 @@ class _NoteEditorScreenWidgetState
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        _saveAndExit();
+
+        await _saveAndExit();
       },
       child: Scaffold(
         backgroundColor: colorScheme.surface,

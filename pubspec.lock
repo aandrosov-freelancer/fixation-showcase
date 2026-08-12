@@ -1282,6 +1282,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.6"
+  truncate:
+    dependency: "direct main"
+    description:
+      name: truncate
+      sha256: ac4f0c447d440886e53dc583423d2ce963add32160bf7790d5f72cbda5dc76c2
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   typed_data:
     dependency: transitive
     description:
