@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:app/core/l10n/app_localizations.dart';
 import 'package:app/core/storage/local_image_service.dart';
