@@ -8,3 +8,4 @@ trigger: always_on
   implementation
 - Always follow project structure and defined patterns
 - Always Do not write comments
+- Always follow SOLID, DRY, KISS, YAGNI principles
