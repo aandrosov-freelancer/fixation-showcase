@@ -26,10 +26,8 @@ extension NoteQueries on AppDatabase {
   Future<List<NoteItem>> findNotesByFullTextSearch(String query) {
     query = query.trim().toLowerCase();
 
-    Expression<bool> matcher($NoteItemsTable note) => .or([
-      note.title.lower().like('%$query%'),
-      note.content.lower().like('%$query%'),
-    ]);
+    Expression<bool> matcher($NoteItemsTable note) =>
+        .or([note.title.like('%$query%'), note.content.like('%$query%')]);
 
     return (select(noteItems)
           ..where(matcher)

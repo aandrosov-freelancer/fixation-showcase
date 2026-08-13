@@ -100,9 +100,8 @@ class NoteEditorScreenViewModel extends AsyncNotifier<void> {
     Future<void> delete() async {
       state = .loading();
       state = await .guard(() async {
-        await _notesRepository.deleteNote(id: _noteId!);
+        if (_noteId != null) await _notesRepository.deleteNote(id: _noteId!);
         _router.pop();
-        return;
       });
     }
 

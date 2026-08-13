@@ -319,6 +319,7 @@ class _CustomBottomBarWidget extends HookWidget {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = ColorScheme.of(context);
     final searchTextEditingController = useTextEditingController();
+    final searchTextFieldFocusNode = useFocusNode();
 
     return SafeArea(
       top: false,
@@ -341,8 +342,11 @@ class _CustomBottomBarWidget extends HookWidget {
               child: ValueListenableBuilder(
                 valueListenable: searchTextEditingController,
                 builder: (_, value, _) => TextField(
+                  focusNode: searchTextFieldFocusNode,
+                  autofocus: false,
                   controller: searchTextEditingController,
                   onChanged: onSearchChanged,
+                  onTapUpOutside: (_) => searchTextFieldFocusNode.unfocus(),
                   style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
                   decoration: InputDecoration(
                     hintText: l10n.searchHint,
