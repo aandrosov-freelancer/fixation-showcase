@@ -153,6 +153,8 @@ class _BodyWidget extends ConsumerWidget {
 
     return switch (notes) {
       AsyncValue(hasError: true) => _ErrorWidget(),
+      AsyncValue(:final value, hasValue: true) when value!.isEmpty =>
+        const _EmptyNotesWidget(),
       AsyncValue(:final value, hasValue: true) => GridView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -194,6 +196,78 @@ class _BodyWidget extends ConsumerWidget {
         ),
       ),
     };
+  }
+}
+
+class _EmptyNotesWidget extends HookWidget {
+  const _EmptyNotesWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colorScheme = ColorScheme.of(context);
+    final customColors = context.customColors;
+
+    final animationController = useAnimationController(
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    useEffect(() {
+      animationController.repeat(reverse: true);
+      return null;
+    }, const []);
+
+    final bounceAnimation = useAnimation(
+      Tween<double>(begin: 0, end: 10).animate(
+        CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+      ),
+    );
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  LucideIcons.notebookPen,
+                  size: 64,
+                  color: colorScheme.primary.withValues(alpha: 0.4),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.emptyNotesTitle,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.emptyNotesSubtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: customColors.textMuted),
+                ),
+              ],
+            ),
+            Align(
+              alignment: .bottomRight,
+              child: Transform.translate(
+                offset: Offset(4, bounceAnimation),
+                child: Icon(
+                  LucideIcons.arrowDown,
+                  size: 32,
+                  color: colorScheme.primary.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
