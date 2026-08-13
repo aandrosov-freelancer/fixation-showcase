@@ -55,6 +55,8 @@ final class NotesScreenViewModel extends AsyncNotifier<List<NoteModel>> {
     _dialogService.showDeleteNoteDialog(onDelete: delete);
   }
 
-  void editNote({int? noteId}) =>
-      _router.push(AppRoutes.noteEditorPath(noteId));
+  void editNote({int? noteId}) async {
+    await _router.push(AppRoutes.noteEditorPath(noteId));
+    searchNotes();
+  }
 }

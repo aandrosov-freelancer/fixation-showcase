@@ -1,281 +1,46 @@
-import 'dart:convert';
-
 import 'package:app/core/l10n/app_localizations.dart';
-import 'package:app/core/storage/local_image_service.dart';
+import 'package:app/core/services/dialog_service.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/notes/data/repositories/notes_repository.dart';
+import 'package:app/features/notes/presentation/screens/note_editor_screen/note_editor_screen_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:truncate/truncate.dart';
 
-class NoteEditorScreenWidget extends ConsumerStatefulWidget {
-  final int? noteId;
-
+class NoteEditorScreenWidget extends ConsumerWidget {
   const NoteEditorScreenWidget({super.key, this.noteId});
 
-  @override
-  ConsumerState<NoteEditorScreenWidget> createState() =>
-      _NoteEditorScreenWidgetState();
-}
-
-class _NoteEditorScreenWidgetState
-    extends ConsumerState<NoteEditorScreenWidget> {
-  final TextEditingController _titleController = TextEditingController();
-  late QuillController _quillController;
-  final FocusNode _editorFocusNode = FocusNode();
-  final ScrollController _scrollController = ScrollController();
-  int? _noteId;
-  DateTime? _noteCreatedAt;
+  final int? noteId;
 
   @override
-  void initState() {
-    super.initState();
-    _noteId = widget.noteId;
-    _quillController = QuillController.basic();
-    _loadNoteData();
-  }
-
-  Future<void> _loadNoteData() async {
-    final notesRepository = ref.read(notesRepositoryProvider);
-
-    if (widget.noteId != null) {
-      final note = await notesRepository.getNoteById(id: widget.noteId!);
-      if (note == null) {
-        return;
-      }
-
-      _titleController.text = note.title;
-      _quillController.document = Document.fromJson(jsonDecode(note.content));
-      _noteCreatedAt = note.createdAt;
-    }
-  }
-
-  Future<void> _saveAndExit() async {
-    final notesRepository = ref.read(notesRepositoryProvider);
-    final title = _titleController.text;
-    final content = jsonEncode(_quillController.document.toDelta().toJson());
-    final summary = truncate(_quillController.document.toPlainText(), 40);
-    final createdAt = _noteCreatedAt ?? .now();
-    final updatedAt = DateTime.now();
-
-    if (_noteId == null) {
-      _noteId = await notesRepository.addNote(
-        .new(
-          title: title,
-          content: content,
-          summary: summary,
-          createdAt: .now(),
-          updatedAt: updatedAt,
-        ),
-      );
-    } else {
-      await notesRepository.updateNote(
-        .new(
-          id: _noteId!,
-          title: title,
-          content: content,
-          summary: summary,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        ),
-      );
-    }
-
-    if (mounted) {
-      context.pop();
-    }
-  }
-
-  void _insertImageEmbed(String imagePath) {
-    final index = _quillController.selection.baseOffset;
-    final length = _quillController.selection.extentOffset - index;
-    final validIndex = index >= 0
-        ? index
-        : _quillController.document.length - 1;
-    final validLength = length > 0 ? length : 0;
-    _quillController.replaceText(
-      validIndex,
-      validLength,
-      BlockEmbed.image(imagePath),
-      null,
-    );
-  }
-
-  void _showImageSourcePicker() {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = ColorScheme.of(context);
-    final customColors = context.customColors;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  child: Text(
-                    l10n.imageSourceTitle,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: customColors.containerFill,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      LucideIcons.image,
-                      color: colorScheme.primary,
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(l10n.insertImageFromGallery),
-                  onTap: () async {
-                    Navigator.pop(sheetContext);
-                    final savedPath =
-                        await LocalImageService.pickAndSaveImageFromGallery();
-                    if (savedPath != null && mounted) {
-                      _insertImageEmbed(savedPath);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: customColors.containerFill,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(
-                      LucideIcons.link,
-                      color: colorScheme.primary,
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(l10n.insertImageFromUrl),
-                  onTap: () {
-                    Navigator.pop(sheetContext);
-                    _showAddImageUrlDialog();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showAddImageUrlDialog() {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = ColorScheme.of(context);
-    final urlController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          l10n.insertImageTitle,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-        content: TextField(
-          controller: urlController,
-          decoration: InputDecoration(hintText: l10n.insertImageHint),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancelButton),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final url = urlController.text.trim();
-              if (url.isNotEmpty) {
-                _insertImageEmbed(url);
-              }
-              Navigator.pop(dialogContext);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-            ),
-            child: Text(l10n.insertButton),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _onDeletePressed() {
-    _DeleteNoteDialog.show(
-      context,
-      onDelete: () async {
-        final notesRepository = ref.read(notesRepositoryProvider);
-
-        if (_noteId != null) {
-          await notesRepository.deleteNote(id: _noteId!);
-        }
-
-        if (mounted) {
-          context.pop();
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _quillController.dispose();
-    _editorFocusNode.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = ColorScheme.of(context);
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final isKeyboardOpened = bottomInset > 0;
+    final isKeyboardOpened = MediaQuery.viewInsetsOf(context).bottom > 0;
+    ref.watch(noteEditorScreenViewModelProvider(noteId));
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        await _saveAndExit();
+        ref
+            .read(noteEditorScreenViewModelProvider(noteId).notifier)
+            .saveAndExit();
       },
       child: Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: _CustomAppBar(
-          titleController: _titleController,
-          onExit: _saveAndExit,
-          onDelete: _onDeletePressed,
+          titleController: ref
+              .read(noteEditorScreenViewModelProvider(noteId).notifier)
+              .titleController,
+          onExit: ref
+              .read(noteEditorScreenViewModelProvider(noteId).notifier)
+              .saveAndExit,
+          onDelete: ref
+              .read(noteEditorScreenViewModelProvider(noteId).notifier)
+              .deleteNote,
         ),
         body: Stack(
           children: [
@@ -283,9 +48,21 @@ class _NoteEditorScreenWidgetState
               children: [
                 Expanded(
                   child: QuillEditor.basic(
-                    controller: _quillController,
-                    focusNode: _editorFocusNode,
-                    scrollController: _scrollController,
+                    controller: ref
+                        .read(
+                          noteEditorScreenViewModelProvider(noteId).notifier,
+                        )
+                        .contentController,
+                    focusNode: ref
+                        .read(
+                          noteEditorScreenViewModelProvider(noteId).notifier,
+                        )
+                        .contentFocusNode,
+                    scrollController: ref
+                        .read(
+                          noteEditorScreenViewModelProvider(noteId).notifier,
+                        )
+                        .contentScrollController,
                     config: QuillEditorConfig(
                       placeholder: l10n.contentHint,
                       expands: true,
@@ -308,11 +85,14 @@ class _NoteEditorScreenWidgetState
               child: SafeArea(
                 top: false,
                 child: _FloatingQuillToolbar(
-                  controller: _quillController,
-                  onAddImage: () {
-                    _editorFocusNode.unfocus();
-                    _showImageSourcePicker();
-                  },
+                  controller: ref
+                      .read(noteEditorScreenViewModelProvider(noteId).notifier)
+                      .contentController,
+                  onAddImage: ref
+                      .read(noteEditorScreenViewModelProvider(noteId).notifier)
+                      .addImage,
+                  onColorPick: () =>
+                      ref.read(dialogServiceProvider).showColorPicker(),
                 ),
               ),
             ),
@@ -400,10 +180,12 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 class _FloatingQuillToolbar extends StatefulWidget {
   final QuillController controller;
   final VoidCallback onAddImage;
+  final Future<Color?> Function() onColorPick;
 
   const _FloatingQuillToolbar({
     required this.controller,
     required this.onAddImage,
+    required this.onColorPick,
   });
 
   @override
@@ -437,61 +219,13 @@ class _FloatingQuillToolbarState extends State<_FloatingQuillToolbar> {
     setState(() {});
   }
 
-  void _showColorPicker() {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = ColorScheme.of(context);
-    final editorPalette = context.customColors.editorPalette;
+  Future<void> _showColorPicker() async {
+    final color = await widget.onColorPick();
+    if (color == null) return;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (sheetContext) {
-        return Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.textColorTitle,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: editorPalette.map((color) {
-                  return GestureDetector(
-                    onTap: () {
-                      final hex =
-                          '#${color.toARGB32().toRadixString(16).substring(2)}';
-                      widget.controller.formatSelection(ColorAttribute(hex));
-                      Navigator.pop(sheetContext);
-                      setState(() {});
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black12, width: 2),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    final hex = '#${color.toARGB32().toRadixString(16).substring(2)}';
+    widget.controller.formatSelection(ColorAttribute(hex));
+    setState(() {});
   }
 
   @override
@@ -649,83 +383,6 @@ class _ToolbarButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _DeleteNoteDialog extends StatelessWidget {
-  final VoidCallback onDelete;
-
-  const _DeleteNoteDialog({required this.onDelete});
-
-  static Future<void> show(
-    BuildContext context, {
-    required VoidCallback onDelete,
-  }) {
-    return showDialog(
-      context: context,
-      builder: (context) => _DeleteNoteDialog(onDelete: onDelete),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = ColorScheme.of(context);
-
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: colorScheme.surface,
-      title: Row(
-        children: [
-          Icon(LucideIcons.trash2, color: colorScheme.error, size: 22),
-          const SizedBox(width: 10),
-          Text(
-            l10n.deleteDialogTitle,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-      content: Text(
-        l10n.deleteDialogMessage,
-        style: TextStyle(
-          fontSize: 14,
-          color: colorScheme.secondary,
-          height: 1.4,
-        ),
-      ),
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.secondary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: Text(l10n.cancelButton),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onDelete();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.error,
-            foregroundColor: colorScheme.onPrimary,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: Text(l10n.deleteButton),
-        ),
-      ],
     );
   }
 }
