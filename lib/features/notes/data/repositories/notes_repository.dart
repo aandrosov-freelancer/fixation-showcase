@@ -40,7 +40,11 @@ class NotesRepository {
   Future<List<NoteModel>> getNotesByFullTextSearch({
     required String query,
   }) async {
-    final notes = await _appDatabase.findNotesByFullTextSearch(query);
-    return notes.map(NoteMapper.toModel).toList();
+    bool matcher(NoteItem note) =>
+        note.title.toLowerCase().contains(query.toLowerCase()) ||
+        note.content.toLowerCase().contains(query.toLowerCase());
+
+    final notes = await _appDatabase.allNoteItems;
+    return notes.where(matcher).map(NoteMapper.toModel).toList();
   }
 }
