@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:app/core/router/app_router.dart';
+import 'package:app/core/router/app_routes.dart';
+import 'package:app/core/services/dialog_service.dart';
 import 'package:app/features/notes/data/models/note_model.dart';
 import 'package:app/features/notes/data/repositories/notes_repository.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final notesScreenViewModelProvider = AsyncNotifierProvider(
@@ -10,13 +14,17 @@ final notesScreenViewModelProvider = AsyncNotifierProvider(
 );
 
 final class NotesScreenViewModel extends AsyncNotifier<List<NoteModel>> {
+  late final GoRouter _router;
+  late final DialogService _dialogService;
   late final NotesRepository _notesRepository;
 
   @override
   FutureOr<List<NoteModel>> build() async {
+    _router = ref.watch(routerProvider);
+    _dialogService = ref.watch(dialogServiceProvider);
     _notesRepository = ref.watch(notesRepositoryProvider);
-    searchNotes();
-    return const [];
+
+    return await _notesRepository.allNotes;
   }
 
   Future<void> searchNotes({String? query}) async {
@@ -33,13 +41,19 @@ final class NotesScreenViewModel extends AsyncNotifier<List<NoteModel>> {
   }
 
   Future<void> deleteNote({required int id}) async {
-    final previousValue = state.value;
-    state = .loading();
+    Future<void> delete() async {
+      final previousValue = state.value;
 
-    state = await .guard(() async {
-      await _notesRepository.deleteNote(id: id);
-      previousValue!.removeWhere((note) => note.id == id);
-      return previousValue;
-    });
+      state = .loading();
+      state = await .guard(() async {
+        await _notesRepository.deleteNote(id: id);
+        previousValue!.removeWhere((note) => note.id == id);
+        return previousValue;
+      });
+    }
+
+    _dialogService.showDeleteNoteDialog(onDelete: delete);
   }
+
+  void editNote({int? noteId}) => _router.go(AppRoutes.noteEditorPath(noteId));
 }

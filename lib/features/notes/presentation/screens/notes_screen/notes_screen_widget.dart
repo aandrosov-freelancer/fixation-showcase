@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/core/l10n/app_localizations.dart';
 import 'package:app/core/router/app_routes.dart';
 import 'package:app/core/theme/app_theme.dart';
@@ -156,47 +154,39 @@ class _BodyWidget extends ConsumerWidget {
 
     return switch (notes) {
       AsyncValue(hasError: true) => _ErrorWidget(),
-      AsyncValue(:final value, hasValue: true) => AnimationLimiter(
-        child: GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: value!.length,
-          itemBuilder: (context, index) {
-            final note = value[index];
+      AsyncValue(:final value, hasValue: true) => GridView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.85,
+        ),
+        itemCount: value!.length,
+        itemBuilder: (context, index) {
+          final note = value[index];
 
-            return AnimationConfiguration.staggeredGrid(
-              position: index,
-              duration: const Duration(milliseconds: 375),
-              columnCount: 2,
-              child: ScaleAnimation(
-                child: FadeInAnimation(
-                  child: _NoteCard(
-                    title: note.title,
-                    content: note.summary,
-                    updatedAt: note.updatedAt,
-                    onTap: () async {
-                      await context.push(AppRoutes.noteEditorPath(note.id));
-                      ref
-                          .read(notesScreenViewModelProvider.notifier)
-                          .searchNotes();
-                    },
-                    onLongPress: () => _DeleteNoteDialog.show(
-                      context,
-                      onDelete: () => ref
-                          .read(notesScreenViewModelProvider.notifier)
-                          .deleteNote(id: note.id),
-                    ),
-                  ),
+          return AnimationConfiguration.staggeredGrid(
+            position: index,
+            duration: const Duration(milliseconds: 250),
+            columnCount: 2,
+            child: ScaleAnimation(
+              child: FadeInAnimation(
+                child: _NoteCard(
+                  title: note.title,
+                  content: note.summary,
+                  updatedAt: note.updatedAt,
+                  onTap: () => ref
+                      .read(notesScreenViewModelProvider.notifier)
+                      .editNote(noteId: note.id),
+                  onLongPress: () => ref
+                      .read(notesScreenViewModelProvider.notifier)
+                      .deleteNote(id: note.id),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
       _ => Center(
         child: CircularProgressIndicator(
@@ -250,83 +240,6 @@ class _ErrorWidget extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _DeleteNoteDialog extends StatelessWidget {
-  final VoidCallback onDelete;
-
-  const _DeleteNoteDialog({required this.onDelete});
-
-  static Future<void> show(
-    BuildContext context, {
-    required VoidCallback onDelete,
-  }) {
-    return showDialog(
-      context: context,
-      builder: (context) => _DeleteNoteDialog(onDelete: onDelete),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = ColorScheme.of(context);
-
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: colorScheme.surface,
-      title: Row(
-        children: [
-          Icon(LucideIcons.trash2, color: colorScheme.error, size: 22),
-          const SizedBox(width: 10),
-          Text(
-            l10n.deleteDialogTitle,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-      content: Text(
-        l10n.deleteDialogMessage,
-        style: TextStyle(
-          fontSize: 14,
-          color: colorScheme.secondary,
-          height: 1.4,
-        ),
-      ),
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.secondary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: Text(l10n.cancelButton),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            onDelete();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.error,
-            foregroundColor: colorScheme.onPrimary,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: Text(l10n.deleteButton),
-        ),
-      ],
     );
   }
 }
