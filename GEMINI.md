@@ -7,7 +7,7 @@ Flutter-приложение для создания и редактирован
 - **Flutter** 3.44.9 (FVM)
 - **Dart SDK** ^3.12.2
 - **State Management**: Riverpod (`hooks_riverpod`) + Flutter Hooks (`flutter_hooks`)
-- **Database**: Drift (SQLite) с FTS5 полнотекстовым поиском
+- **Database**: Drift (SQLite)
 - **Routing**: GoRouter (`go_router`)
 - **Code Generation**: Freezed, JsonSerializable, Drift, FlutterGen
 - **Rich Text**: Flutter Quill (`flutter_quill`, `flutter_quill_extensions`)
