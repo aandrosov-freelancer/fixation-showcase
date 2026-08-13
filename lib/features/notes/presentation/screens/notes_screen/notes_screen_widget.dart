@@ -74,7 +74,7 @@ class _NoteCard extends StatelessWidget {
         : l10n.noDescription;
 
     return Material(
-      color: Colors.transparent,
+      color: colorScheme.surface,
       child: InkWell(
         onTap: onTap,
         onLongPress: onLongPress,
@@ -82,7 +82,6 @@ class _NoteCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: colorScheme.outline, width: 1),
             boxShadow: [
