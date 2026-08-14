@@ -156,10 +156,10 @@ class _BodyWidget extends ConsumerWidget {
       AsyncValue(:final value, hasValue: true) when value!.isEmpty =>
         const _EmptyNotesWidget(),
       AsyncValue(:final value, hasValue: true) => GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12,
+          crossAxisSpacing: 8,
           mainAxisSpacing: 12,
           childAspectRatio: 0.85,
         ),
