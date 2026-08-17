@@ -1,5 +1,5 @@
 name: app
-description: ""
+description: "Фиксация — современное Flutter-приложение для ведения заметок с Rich Text редактором, локальной БД Drift и Riverpod."
 publish_to: "none"
 version: 0.1.0+1
 
